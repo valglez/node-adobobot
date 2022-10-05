@@ -8,6 +8,7 @@ const userSchema = new Schema ({
     },
     username: {
         type: String,
+        default: 'Anonymous',
         required: true
     }
 })
