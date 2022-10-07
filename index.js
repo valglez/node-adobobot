@@ -1,5 +1,15 @@
-const Bot = require('./src/telegram/bot')
+const Database = require('./src/infrastructure/database/mongo')
+const Bot = require('./src/application/telegram/bot')
+require('dotenv').config()
 
-const bot = new Bot(process.env.token)
+const { TOKEN, URI } = process.env
+const db = new Database()
+const bot = new Bot(TOKEN, db)
 
-bot.run()
+db.connect(URI)
+    .then(() => {
+        bot.launch()
+    })
+    .catch((error) => {
+        console.log(error)
+    })
