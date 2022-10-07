@@ -3,11 +3,11 @@ const Schema = mongoose.Schema
 
 const msgSchema = new Schema ({
     userId: {
-        type: String,
+        type: Number,
         required: true
     },
     chatId: {
-        type: String,
+        type: Number,
         required: true
     },
     date: {
