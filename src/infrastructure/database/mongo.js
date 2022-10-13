@@ -2,8 +2,9 @@ const Msg = require('./models/message')
 const User = require('./models/user')
 
 class Database {
-    constructor() {
+    constructor(cache) {
         this.db = require('mongoose')
+        this.cache = cache
     }
     /**
      * Connects to the database
@@ -22,6 +23,18 @@ class Database {
             console.log('Could not connect to database!', error)
             return false
         }
+    }
+    loadUsers() {
+        const rawUsers = this.getUsernameFromDB()
+        for (obj of rawUsers) {
+            return this.cache.set(obj['userId'], obj['username'])
+        }
+    }
+    getUsers(userId) {
+        return this.cache.get(userId)
+    }
+    getUsernameFromDB() {
+        return User.find()
     }
     async getUserById(userId) {
         try {
@@ -60,6 +73,7 @@ class Database {
             for (const user of users) {
             response += `• El user ${await this.getUsernameById(user.userId)} ha enviado ${user.msg} mensajes\n`
             }
+            response += `\nUsuario más activo: ${await this.getUsernameById(users[0].userId)}`
             return msg.reply.text(response)
         } catch (error) {
             return Promise.reject(error)
