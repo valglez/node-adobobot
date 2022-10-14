@@ -1,7 +1,7 @@
 const Msg = require('./models/message')
 const User = require('./models/user')
 
-class Database {
+class dataController {
     constructor(cache) {
         this.db = require('mongoose')
         this.cache = cache
@@ -24,17 +24,25 @@ class Database {
             return false
         }
     }
-    loadUsers() {
-        const rawUsers = this.getUsernameFromDB()
-        for (obj of rawUsers) {
+    async loadUsers() {
+        try {
+            const rawUsers = await this.getUsernameFromDB()
+            for (const obj of rawUsers) {
             return this.cache.set(obj['userId'], obj['username'])
+            }
+        }catch (error) {
+            Promise.reject(error)
         }
     }
     getUsers(userId) {
         return this.cache.get(userId)
     }
-    getUsernameFromDB() {
-        return User.find()
+    async getUsernameFromDB() {
+        try {
+           return await User.find()
+        } catch(err) {
+          return Promise.reject(err)
+        }
     }
     async getUserById(userId) {
         try {
@@ -71,9 +79,9 @@ class Database {
         ])
         let response = ''
             for (const user of users) {
-            response += `• El user ${await this.getUsernameById(user.userId)} ha enviado ${user.msg} mensajes\n`
+            response += `• El user ${this.getUsers(user.userId)} ha enviado ${user.msg} mensajes\n`
             }
-            response += `\nUsuario más activo: ${await this.getUsernameById(users[0].userId)}`
+            response += `\nUsuario más activo: ${this.getUsers(users[0].userId)}`
             return msg.reply.text(response)
         } catch (error) {
             return Promise.reject(error)
@@ -99,4 +107,4 @@ class Database {
     }
 }
 
-module.exports = Database
+module.exports = dataController

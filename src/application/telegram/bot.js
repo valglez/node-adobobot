@@ -6,10 +6,9 @@ class Bot {
         this.db = database
     }
     launch() {
-        this.bot.on(['/start', '/hola'], (msg) => msg.reply.text('¡Hola!'))
+        this.bot.on('/start', (msg) => msg.reply.text('¡Hola!'))
         this.bot.on('/metrics', (msg) => this.db.getMetricsByChatId(msg))
-        this.bot.on('text', (msg) => this.db.storeMsg(msg))
-        this.bot.on('text', (msg) => this.db.checkUserId(msg))
+        this.bot.on('text', (msg) => {this.db.storeMsg(msg), this.db.checkUserId(msg)})
         this.bot.start()
         console.log('Bot started!')
     }
