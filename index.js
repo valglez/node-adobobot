@@ -7,10 +7,10 @@ const { TOKEN, URI } = process.env
 const cache = new Cache()
 const ctrl = new dataController(cache)
 const bot = new Bot(TOKEN, ctrl)
-db.connect(URI)
+ctrl.connect(URI)
   .then(() => {
     bot.launch()
-    db.loadUsers()
+    ctrl.loadUsers()
   })
   .catch((error) => {
     console.log(error)
