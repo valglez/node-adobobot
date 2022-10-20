@@ -28,7 +28,7 @@ class dataController {
         try {
             const rawUsers = await this.getUsernameFromDB()
             for (const obj of rawUsers) {
-            return this.cache.set(obj['userId'], obj['username'])
+                this.cache.set(obj.userId, obj.username)
             }
         }catch (error) {
             Promise.reject(error)
